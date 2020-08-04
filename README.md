@@ -36,22 +36,24 @@ We will be using Google Colab💚. I love to get the tensor computational power 
 
 1. Installation of all necessary libraries
 2. Preparing Dataset for Custom Training
-3. Using a pretrained model
-4. Creating Labelmap.pbtxt
-5. Creating xml to csv
-6. Creating  tensorflow records files from csv
-7. Getting the config file and do the necessary changes
-8. Start the training
-9. Stop/Resume the training
-10. Exporting the graph
-11. Doing prediction on the custom trained model
-12. Using Webcam for Prediction
-13. Working with Videos
-14. Applying Multi-threading
-15. Creating Docker Images for a Detection App
-16. Building a Flask App
-17. Building FastAPI App
-18. 
+3. Connecting Google Drive with Colab
+4. Using a pretrained model
+5. Creating Labelmap.pbtxt
+6. Creating xml to csv
+7. Creating  tensorflow records files from csv
+8. Getting the config file and do the necessary changes
+9. Start the training
+10. Stop/Resume the training
+11. Evalauating the model
+12. Exporting the graph
+13. Doing prediction on the custom trained model
+14. Using Webcam for Prediction
+15. Working with Videos
+16. Converting to Tflite
+17. Creating Docker Images for a Detection App **[TODO]**
+18. Building a Flask App **[TODO]**
+19. Building FastAPI App **[TODO]**
+20. Applying Multithreading 
 
 
 
@@ -76,7 +78,8 @@ By default, Tensorflow Gpu packages come pre-installed in the environment.
 
 But you can always check by doing 
 
-
+    pip freeze
+<img src="https://i.ibb.co/7yS41PS/Screenshot-from-2020-08-03-20-31-36.png" alt="Screenshot-from-2020-08-03-20-31-36" border="0">
 
 In the next step follow the execution flow of the official notebook.
 
@@ -87,6 +90,7 @@ In the next step follow the execution flow of the official notebook.
     pip install pycocotools
 
 
+<img src="https://i.ibb.co/G9sPLsN/Screenshot-from-2020-08-03-20-28-38.png" alt="Screenshot-from-2020-08-03-20-28-38" border="0">
 
 #### Clone the offical Models Repo 
 
@@ -100,14 +104,18 @@ In the next step follow the execution flow of the official notebook.
     	!git clone --depth 1 https://github.com/tensorflow/models
 
 
+<img src="https://i.ibb.co/xS9zR4n/Screenshot-from-2020-08-03-20-33-02.png" alt="Screenshot-from-2020-08-03-20-33-02" border="0">
+
 Tensorflow Models  Repository :- [Tensorflow Models Repository](https://github.com/tensorflow/models)
 
-
+<img src="https://i.ibb.co/XJycdsf/Screenshot-from-2020-08-03-20-34-29.png" alt="Screenshot-from-2020-08-03-20-34-29" border="0">
 
 #### Conversion of the protos files to the python files
 
     cd models/research/
     protoc object_detection/protos/*.proto --python_out=.
+
+<img src="https://i.ibb.co/HVbpcmh/Screenshot-from-2020-08-03-20-37-13.png" alt="Screenshot-from-2020-08-03-20-37-13" border="0">
 
 #### Installation of the object-detection library
 
@@ -144,12 +152,14 @@ Tensorflow Models  Repository :- [Tensorflow Models Repository](https://github.c
     #Patch the location of gfile
     tf.gfile = tf.io.gfile
 
+<img src="https://i.ibb.co/sFdFf4B/Screenshot-from-2020-08-03-20-43-49.png" alt="Screenshot-from-2020-08-03-20-43-49" border="0">
+
 #### Model Downloader and loading fucntion
 
 Model selection can be done from the [Tensorflow 2 Model ZOO](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md)
 
     def  load_model(model_name):
-    	base_url =  'http://download.tensorflow.org/models/object_detection/'
+    	base_url =  'http://download.tensorflow.org/models/object_detection/tf2/20200711/'
     	model_file = model_name +  '.tar.gz'
     	model_dir = tf.keras.utils.get_file(
     	fname=model_name,
@@ -159,11 +169,15 @@ Model selection can be done from the [Tensorflow 2 Model ZOO](https://github.com
     	model = tf.saved_model.load(str(model_dir))
     	return model
 
+<img src="https://i.ibb.co/DkxVDdP/Screenshot-from-2020-08-03-20-45-28.png" alt="Screenshot-from-2020-08-03-20-45-28" border="0">
+
 #### Loading the Labelmap
 
     #List of the strings that is used to add correct label for each box.
     PATH_TO_LABELS =  'models/research/object_detection/data/mscoco_label_map.pbtxt'
     category_index = label_map_util.create_category_index_from_labelmap(PATH_TO_LABELS, use_display_name=True)
+
+
 
 #### Going to the detection part
 
@@ -172,17 +186,23 @@ Model selection can be done from the [Tensorflow 2 Model ZOO](https://github.com
     TEST_IMAGE_PATHS =  sorted(list(PATH_TO_TEST_IMAGES_DIR.glob("*.jpg")))
     TEST_IMAGE_PATHS
 
+
+<img src="https://i.ibb.co/kJV5V4p/Screenshot-from-2020-08-03-20-46-27.png" alt="Screenshot-from-2020-08-03-20-46-27" border="0">
+
 #### Model Selection from the Model Zoo
 
 
 [Tensorflow2 Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md)
 
+<img src="https://i.ibb.co/41yn3Sj/Screenshot-from-2020-08-03-20-48-32.png" alt="Screenshot-from-2020-08-03-20-48-32" border="0">
 
 In the model zoo there are various different types of SOTA models available. We can use any one for inference.
 
 	
     model_name =  "efficientdet_d0_coco17_tpu-32"
     detection_model = load_model(model_name)
+
+<img src="https://i.ibb.co/Zg9GPLP/Screenshot-from-2020-08-03-20-51-11.png" alt="Screenshot-from-2020-08-03-20-51-11" border="0">
 
 I am using here [EfficientNet](http://download.tensorflow.org/models/object_detection/tf2/20200711/efficientdet_d0_coco17_tpu-32.tar.gz) you can use any one according to your choice.
 
@@ -191,6 +211,8 @@ I am using here [EfficientNet](http://download.tensorflow.org/models/object_dete
     print(detection_model.signatures['serving_default'].inputs)
     detection_model.signatures['serving_default'].output_dtypes
     detection_model.signatures['serving_default'].output_shapes
+
+<img src="https://i.ibb.co/RcqYjyP/Screenshot-from-2020-08-03-20-52-14.png" alt="Screenshot-from-2020-08-03-20-52-14" border="0">
 
 #### Utilizing the function to load and do prediction
 
@@ -228,9 +250,15 @@ I am using here [EfficientNet](http://download.tensorflow.org/models/object_dete
         
       return output_dict
 
+
+<img src="https://i.ibb.co/Dgwb5xN/Screenshot-from-2020-08-03-20-53-32.png" alt="Screenshot-from-2020-08-03-20-53-32" border="0">
+
+
 #### Running the object detection module some some test images
 
-There is a folder calles test images in the object detection folder with two images.
+
+
+There is a folder called **test images** in the object detection folder with two images.
 
     def show_inference(model, image_path):
       # the array based representation of the image will be used later in order to prepare the
@@ -251,12 +279,16 @@ There is a folder calles test images in the object detection folder with two ima
     
       display(Image.fromarray(image_np))
 
+<img src="https://i.ibb.co/t3ZFgtP/Screenshot-from-2020-08-03-20-54-54.png" alt="Screenshot-from-2020-08-03-20-54-54" border="0">
+
 #### Displaying the final results
 
     for image_path in TEST_IMAGE_PATHS:
       show_inference(detection_model, image_path)
 
+<img src="https://i.ibb.co/FVdmvQh/Screenshot-from-2020-08-03-20-56-10.png" alt="Screenshot-from-2020-08-03-20-56-10" border="0">
 
+<img src="https://i.ibb.co/GPynRC9/Screenshot-from-2020-08-03-20-57-24.png" alt="Screenshot-from-2020-08-03-20-57-24" border="0">
 
 
 
@@ -275,7 +307,7 @@ There is a folder calles test images in the object detection folder with two ima
 
 Here we will be using the famous Card Dataset provided by [Edge Electronics](https://github.com/EdjeElectronics/TensorFlow-Object-Detection-API-Tutorial-Train-Multiple-Objects-Windows-10/tree/master/images) . Here the data is already annotated. So we do not need to do the hard work.
 
-Readers might skip this part as we will talking about the annotation process.
+***Readers might skip this part as we will talking about the annotation process.***
 
 The tool that we will be using is [Labelimg.](https://github.com/tzutalin/labelImg)
 
@@ -286,14 +318,16 @@ Windows Download Link :- [Download Link](https://www.dropbox.com/s/kqoxr10l3rkst
 After the installation is successful. Open the tool 
 
 First Look of the tool
+<img src="https://i.ibb.co/xmtyYpr/Screenshot-from-2020-08-03-19-31-06.png" alt="Screenshot-from-2020-08-03-19-31-06" border="0">
 
-Select Open Directory
 
-Then select the folder containing the images.
+Select Open Directory and then select the folder containing the images.
 
 Images will be shown in the right below as a list
 
 Let's start annotating
+
+<a href="https://ibb.co/vdHzhMj"><img src="https://i.ibb.co/FYK7XdD/Screenshot-from-2020-08-03-19-32-09.png" alt="Screenshot-from-2020-08-03-19-32-09" border="0"></a>
 
 Select the PascalVOC option and not Yolo
 
@@ -303,11 +337,41 @@ Click on Save.
 
 Click on Next and then continue with the same process for each images.
 
-### 3. Using a Pre trained model
+### 3. Connecting Google Drive with Colab
+
+Here we will be connecting the Google Drive with Google Colab. So that our training checkpoints can be saved in the drive in the runtine disconnection happens because we know it has a limit of around 8-12 hours.
+
+    from google.colab import drive
+    drive.mount('/content/drive')
+
+Then click on the provided url and paste the key provided. Your Google Drive will be mounted. in the content folder the drive will be mounted.
+
+<img src="https://i.ibb.co/Dt5Lcjw/Screenshot-from-2020-08-03-21-31-58.png" alt="Screenshot-from-2020-08-03-21-31-58" border="0">
+
+**I will be creating a new folder in Google Drive called TFOD2. Then i will clone the models repository in the TFOD2 for training and future refernce of the model checkpoints.** 
+**I will be keeping my complete repository and the folder structure in the the TFOD2 folder.**
+
+A sample picture is provided below :-
+
+<img src="https://i.ibb.co/8cRXJ1J/Screenshot-from-2020-08-03-21-41-37.png" alt="Screenshot-from-2020-08-03-21-41-37" border="0">
+
+<img src="https://i.ibb.co/Jd8gfVt/Screenshot-from-2020-08-03-21-45-17.png" alt="Screenshot-from-2020-08-03-21-45-17" border="0">
+
+<img src="https://i.ibb.co/S37VSQ0/Screenshot-from-2020-08-03-21-46-52.png" alt="Screenshot-from-2020-08-03-21-46-52" border="0">
+
+<img src="https://i.ibb.co/NLv8QvP/Screenshot-from-2020-08-03-21-47-36.png" alt="Screenshot-from-2020-08-03-21-47-36" border="0">
+
+
+
+### 4. Using a Pre trained model
 
 From the [Model Zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md) we will be selecting the Coco trained [RetinaNet50](http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_resnet50_v1_fpn_640x640_coco17_tpu-8.tar.gz)
 
-### 4. Creating Labelmap.pbtxt
+<img src="https://i.ibb.co/tp9CpL6/Screenshot-from-2020-08-03-19-46-23.png" alt="Screenshot-from-2020-08-03-19-46-23" border="0">
+
+### 5. Creating Labelmap.pbtxt
+
+Create a file called **labelmap.pbtxt** where we will be keeping the name of the classes in our Cards Dataset.
 
     item {
       id: 1
@@ -339,13 +403,23 @@ From the [Model Zoo](https://github.com/tensorflow/models/blob/master/research/o
       name: 'ace'
     }
 
-### 5. Creating xml to csv
+The file **labelmap.pbtxt** is available in the **utility_files.zip** provided by the Google drive link.
+
+
+### 6. Creating xml to csv
+
 
     !python xml_to_csv.py
 
-### 6. Creating  tensorflow records files from csv
+The file **xml_to_csv.py** is available in the **utility_files.zip** provided by the Google drive link.
 
-Changes to be done in the generate_tfrecord.py file
+
+### 7. Creating  tensorflow records files from csv
+
+The file **generate_tfrecord.py** is available in the **utility_files.zip** provided by the Google drive link.
+
+
+Changes to be done in the generate_tfrecord.py file as per the classes in your dataset.
 
     #TO-DO replace this with label map
     def class_text_to_int(row_label):
@@ -373,13 +447,33 @@ Execution of the genrate_tfrecord.py file to create tf records.
     #for validation data
     python generate_tfrecord.py --csv_input=images/test_labels.csv --image_dir=images/test --output_path=test.record
 
-### 6. Getting the config file and do the necessary changes
+**If you get a None TypeError** in the elif ladder change the value of else  from None to **return 0**
+
+    #TO-DO replace this with label map
+    def class_text_to_int(row_label):
+        if row_label == 'nine':
+            return 1
+        elif row_label == 'ten':
+            return 2
+        elif row_label == 'jack':
+            return 3
+        elif row_label == 'queen':
+            return 4
+        elif row_label == 'king':
+            return 5
+        elif row_label == 'ace':
+            return 6
+        else:
+            return 0
+
+
+### 8. Getting the config file and do the necessary changes
 
 Config file location will be available in the downloaded pretrained folder. 
 
 Pretrained we are using :- [RetinaNet50](http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_resnet50_v1_fpn_640x640_coco17_tpu-8.tar.gz)
 
-After downloading it. Unzip it and the pipeline.config file will be available.
+After downloading it. Unzip it and the **pipeline.config** file will be available.
 
 Open the file in any text editor and do the following changes
 
@@ -438,40 +532,75 @@ Open the file in any text editor and do the following changes
 3. config file for model
 4. Dataset
 
-**Download link :-** 
+**Download link :-**  [utility_files.zip](https://drive.google.com/file/d/1PBOgn5rlMx9tjjvfqlAJM8KY-8w05yXg/view?usp=sharing)
 
-### 7. Start the training
+
+### *We will be creating a new folder called as training inside the object_detection folder where we will be keeping two files pipeline.config and labelmap.pbtxt*
+
+<img src="https://i.ibb.co/1rR903n/Screenshot-from-2020-08-04-18-43-16.png" alt="Screenshot-from-2020-08-04-18-43-16" border="0">
+
+My **training** folder looks above in the object detection.
+
+### 9. Start the training
+
+So we are ready to start the training.
+
+**model_main_tf2.py** is the file needed to start the training.
 
     !python model_main_tf2.py --model_dir=training --pipeline_config_path=training/pipeline.config
 
-### 8. Stop/Resume the training
+<img src="https://i.ibb.co/0FkH3VT/Screenshot-from-2020-08-04-13-08-00.png" alt="Screenshot-from-2020-08-04-13-08-00" border="0">
+
+I have trained for **50000 steps**.
+
+We will be saving all the checkpoints in the **training** folder.
+
+### 10. Stop/Resume the training
 
     !python model_main_tf2.py --model_dir=training --pipeline_config_path=training/pipeline.config
 
-Stop the training
+**Stop the training**
 
-it can be done by a Keyboard Interrupt or COntrol+C
+It can be stopped by a **Keyboard Interrupt** or **Control+C**
 
-### 9. Exporting the graph
+### 11.Evaluating the Model
 
-    python export_inference_graph.py --input_type image_tensor --pipeline_config_path training/pipeline.config
- --trained_checkpoint_prefix training/model.ckpt-25000 --output_directory inference_graph
+    !python model_main_tf2.py --model_dir=training --pipeline_config_path=training/pipeline.config --checkpoint_dir=training
 
-### 10. Doing prediction on the custom trained model
+<img src="https://i.ibb.co/kHkt0sX/Screenshot-from-2020-08-04-13-05-13.png" alt="Screenshot-from-2020-08-04-13-05-13" border="0">
+
+### 12. Exporting the graph
+
+    !!python exporter_main_v2.py --input_type image_tensor --pipeline_config_path training/pipeline.config --trained_checkpoint_dir training/ --output_directory exported-models/my_model
+
+<img src="https://i.ibb.co/Htnqqdn/Screenshot-from-2020-08-04-18-50-29.png" alt="Screenshot-from-2020-08-04-18-50-29" border="0">
+
+At the end you can see something similar
+
+<img src="https://i.ibb.co/vYDLmBK/Screenshot-from-2020-08-04-18-50-50.png" alt="Screenshot-from-2020-08-04-18-50-50" border="0">
+
+
+### 13. Doing prediction on the custom trained model
 
 For Prediction we will be using the notebook at we used for the first time or the one provided in the repository i.e object_detection_tutorial_tf2.ipynb
 
+<img src="https://i.ibb.co/dbdZRp6/Screenshot-from-2020-08-04-18-54-37.png" alt="Screenshot-from-2020-08-04-18-54-37" border="0">
 
-Thanks to the Wonderful TensorFlow Community
+<img src="https://i.ibb.co/FnvRRtL/Screenshot-from-2020-08-04-18-55-18.png" alt="Screenshot-from-2020-08-04-18-55-18" border="0">
 
+<img src="https://i.ibb.co/98G8PhF/Screenshot-from-2020-08-04-18-56-58.png" alt="Screenshot-from-2020-08-04-18-56-58" border="0">
 
+**Final Results**
 
-
-
-
-
-
-
+<img src="https://i.ibb.co/4mxY5Rt/Screenshot-from-2020-08-04-18-58-08.png" alt="Screenshot-from-2020-08-04-18-58-08" border="0">
 
 
+### 14. Working with Videos
+### 15. Converting to Tflite
+### 16. Creating Docker Images for a Detection App **[TODO]**
+### 17. Building a Flask App **[TODO]**
+### 18. Building FastAPI App **[TODO]**
+### 19. Applying Multithreading **[TODO]**
 
+
+***Thanks to the Wonderful TensorFlow Community***
