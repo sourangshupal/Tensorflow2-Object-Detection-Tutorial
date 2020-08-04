@@ -250,6 +250,7 @@ I am using here [EfficientNet](http://download.tensorflow.org/models/object_dete
         
       return output_dict
 
+This is the function which does the prediction on the test images.
 
 <img src="https://i.ibb.co/Dgwb5xN/Screenshot-from-2020-08-03-20-53-32.png" alt="Screenshot-from-2020-08-03-20-53-32" border="0">
 
@@ -279,6 +280,8 @@ There is a folder called **test images** in the object detection folder with two
     
       display(Image.fromarray(image_np))
 
+Here we will be using the function to do inference on the images. 
+
 <img src="https://i.ibb.co/t3ZFgtP/Screenshot-from-2020-08-03-20-54-54.png" alt="Screenshot-from-2020-08-03-20-54-54" border="0">
 
 #### Displaying the final results
@@ -307,21 +310,22 @@ There is a folder called **test images** in the object detection folder with two
 
 Here we will be using the famous Card Dataset provided by [Edge Electronics](https://github.com/EdjeElectronics/TensorFlow-Object-Detection-API-Tutorial-Train-Multiple-Objects-Windows-10/tree/master/images) . Here the data is already annotated. So we do not need to do the hard work.
 
-***Readers might skip this part as we will talking about the annotation process.***
+***Readers might skip this part as we will talking about the annotation process and splitting the dataset.***
 
-The tool that we will be using is [Labelimg.](https://github.com/tzutalin/labelImg)
+The tool that we will be using is [**Labelimg**](https://github.com/tzutalin/labelImg)
 
-Linux Users :- [Follow steps mentioned in the Github Repo](https://github.com/tzutalin/labelImg#ubuntu-linux)
+*Linux Users* :- [Follow steps mentioned in the Github Repo](https://github.com/tzutalin/labelImg#ubuntu-linux)
 
-Windows Download Link :- [Download Link](https://www.dropbox.com/s/kqoxr10l3rkstqd/windows_v1.8.0.zip?dl=1)
+*Windows Download Link* :- [Download Link](https://www.dropbox.com/s/kqoxr10l3rkstqd/windows_v1.8.0.zip?dl=1)
 
 After the installation is successful. Open the tool 
 
 First Look of the tool
+
 <img src="https://i.ibb.co/xmtyYpr/Screenshot-from-2020-08-03-19-31-06.png" alt="Screenshot-from-2020-08-03-19-31-06" border="0">
 
 
-Select Open Directory and then select the folder containing the images.
+Select **Open Directory** and then select the folder containing the images.
 
 Images will be shown in the right below as a list
 
@@ -329,13 +333,29 @@ Let's start annotating
 
 <a href="https://ibb.co/vdHzhMj"><img src="https://i.ibb.co/FYK7XdD/Screenshot-from-2020-08-03-19-32-09.png" alt="Screenshot-from-2020-08-03-19-32-09" border="0"></a>
 
-Select the PascalVOC option and not Yolo
+Select the **PascalVOC** option and not Yolo
 
-Click on Create Rect Box and then annotate the image the object or objects in the image.
+Click on **Create Rect Box** and then annotate the image the object or objects in the image.
 
-Click on Save.
+Click on **Save**.
 
-Click on Next and then continue with the same process for each images.
+Click on **Next** and then continue with the same process for each images.
+
+After completing the whole annotation process it is good have a test train split of the dataset.
+
+*For example :- If we have 1000 images and their 1000 corresponding annotation files. Then we will split it into 80:20 ratio like 800  images and their 800 corresponding annotation files in the **train** folder and 200 images and their 200 corresponding annotation files in the **test** folder.*
+
+So the directory structure of the dataset will be like :-
+
+```
++-- images
+|   +-- train
+|   	+-- image_train_1.jpg
+|		+-- image_train_2.xml
++-- test
+|   	+-- image_test_1.jpg
+|		+-- image_test_2.xml
+```
 
 ### 3. Connecting Google Drive with Colab
 
@@ -351,13 +371,21 @@ Then click on the provided url and paste the key provided. Your Google Drive wil
 **I will be creating a new folder in Google Drive called TFOD2. Then i will clone the models repository in the TFOD2 for training and future refernce of the model checkpoints.** 
 **I will be keeping my complete repository and the folder structure in the the TFOD2 folder.**
 
-A sample picture is provided below :-
+Some sample pictures are provided below :-
+
+The diectory structure in my Google Drive. here  I created a new folder called **TFOD2** and kept the cloned [tensorflow models](https://github.com/tensorflow/models) repository.
 
 <img src="https://i.ibb.co/8cRXJ1J/Screenshot-from-2020-08-03-21-41-37.png" alt="Screenshot-from-2020-08-03-21-41-37" border="0">
 
+Inside models we have we have other folder out of which **research** and **official** are the important ones.
+
 <img src="https://i.ibb.co/Jd8gfVt/Screenshot-from-2020-08-03-21-45-17.png" alt="Screenshot-from-2020-08-03-21-45-17" border="0">
 
+Inside the **research** folder we have the most important folder **object_detection**. 
+
 <img src="https://i.ibb.co/S37VSQ0/Screenshot-from-2020-08-03-21-46-52.png" alt="Screenshot-from-2020-08-03-21-46-52" border="0">
+
+All the files we need is available under the **object_detection** foder.
 
 <img src="https://i.ibb.co/NLv8QvP/Screenshot-from-2020-08-03-21-47-36.png" alt="Screenshot-from-2020-08-03-21-47-36" border="0">
 
@@ -582,11 +610,17 @@ At the end you can see something similar
 
 ### 13. Doing prediction on the custom trained model
 
-For Prediction we will be using the notebook at we used for the first time or the one provided in the repository i.e object_detection_tutorial_tf2.ipynb
+For Prediction we will be using the notebook at we used for the first time or the one provided in the repository i.e [object_detection_tutorial.ipynb](https://github.com/tensorflow/models/blob/master/research/object_detection/colab_tutorials/object_detection_tutorial.ipynb)
+
+Here we are using the model loading function, then loading the labelmap.pbtxt, getting the test images and checking the model signatures.
 
 <img src="https://i.ibb.co/dbdZRp6/Screenshot-from-2020-08-04-18-54-37.png" alt="Screenshot-from-2020-08-04-18-54-37" border="0">
 
+This is the same fuction to run an inference on a single image taken the official notebook.
+
 <img src="https://i.ibb.co/FnvRRtL/Screenshot-from-2020-08-04-18-55-18.png" alt="Screenshot-from-2020-08-04-18-55-18" border="0">
+
+Finally displaying the images in the notebook with prediction.
 
 <img src="https://i.ibb.co/98G8PhF/Screenshot-from-2020-08-04-18-56-58.png" alt="Screenshot-from-2020-08-04-18-56-58" border="0">
 
@@ -603,4 +637,4 @@ For Prediction we will be using the notebook at we used for the first time or th
 ### 19. Applying Multithreading **[TODO]**
 
 
-***Thanks to the Wonderful TensorFlow Community***
+### ***Thanks to the Wonderful TensorFlow Community***
