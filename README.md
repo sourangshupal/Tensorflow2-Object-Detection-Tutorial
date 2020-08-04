@@ -53,7 +53,7 @@ We will be using Google Colab💚. I love to get the tensor computational power 
 17. Creating Docker Images for a Detection App **[TODO]**
 18. Building a Flask App **[TODO]**
 19. Building FastAPI App **[TODO]**
-20. Applying Multithreading 
+20. Applying Multithreading **[TODO]**
 
 
 
